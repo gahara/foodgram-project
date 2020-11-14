@@ -9,11 +9,13 @@
     {% block static %}
     {% endblock static %}
 </head>
-<body class="body">
+<body class="body">        
         {% block content %}
         <!-- Содержимое страницы -->
         {% endblock content %}
-
+        
+        {% include 'parts/footer.html' %}
+        
         {% block js %}
         <!-- Загрузка JavaScript -->
         {% endblock js %}
