@@ -59,13 +59,13 @@
                         <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                     </div>
                     <div class="form__field-group-ingredientes-container">
-                        {% for amount in recipe.recipe_amount.all %}
+                        {% for content in recipe.recipe_content.all %}
                         <div class="form__field-item-ingredient" id="ing{{ forloop.counter }}">
-                            <span> {{ amount.ingredient.title }} - {{ amount.quantity }} {{ amount.ingredient.dimension }}</span>
+                            <span> {{ content.ingredient.title }} - {{ content.quantity }} {{ content.ingredient.dimension }}</span>
                             <span class="form__field-item-delete"></span>
-                            <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ amount.ingredient.title }}" onclick="ingredient.delete">
-                            <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ amount.quantity }}">
-                            <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ amount.ingredient.dimension }}">
+                            <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ content.ingredient.title }}" onclick="ingredient.delete">
+                            <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ content.quantity }}">
+                            <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ content.ingredient.dimension }}">
                         </div>
                         {% endfor %}
                     </div>
@@ -103,7 +103,7 @@
             </div>
 
             <div class="form__footer">
-                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="{% url 'recipe_delete' recipe.author.username recipe.id %}" class="form__ingredient-link">Удалить</a>
+                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="{% url 'delete_recipe' recipe.author.username recipe.id %}" class="form__ingredient-link">Удалить</a>
             </div>
         </form>
 

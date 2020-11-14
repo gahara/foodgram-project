@@ -180,7 +180,7 @@ def edit_recipe(request, username, recipe_id):
             new_recipe = form.save(commit=False)
             new_recipe.author = request.user
             new_recipe.save()
-            new_recipe.recipe_amount.all().delete()
+            new_recipe.recipe_content.all().delete()
             ingredients = get_ingredients(request)
             for title, quantity in ingredients.items():
                 ingredient = Ingredient.objects.get(title=title)
