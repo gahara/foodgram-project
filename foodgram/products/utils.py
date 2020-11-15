@@ -1,5 +1,15 @@
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
+
 from .models import Tag
+
+PER_PAGE_COUNT = 6
+
+
+def get_paginator(recipe_list, page_number):
+    paginator = Paginator(recipe_list, PER_PAGE_COUNT)
+    page = paginator.get_page(page_number)
+    return page, paginator
 
 
 def get_ingredients(request):

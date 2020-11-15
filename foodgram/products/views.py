@@ -3,7 +3,6 @@ import csv
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404, redirect
@@ -11,16 +10,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Content, Favourite, Ingredient, Recipe, ShopList, Tag
 from .forms import RecipeCreateForm, RecipeForm
 from users.models import User, Subscription
-from .utils import get_ingredients, get_tags_for_edit
+from .utils import get_paginator, get_ingredients, get_tags_for_edit
 
-PER_PAGE_COUNT = 6
 all_tags = Tag.objects.all()
-
-
-def get_paginator(recipe_list, page_number):
-    paginator = Paginator(recipe_list, PER_PAGE_COUNT)
-    page = paginator.get_page(page_number)
-    return page, paginator
 
 
 def list_ingredients(request):
@@ -159,7 +151,6 @@ def delete_recipe(request, username, recipe_id):
 
     recipe.delete()
     return redirect('/')
-    # return redirect('profile', username=username)
 
 
 @login_required
@@ -244,9 +235,9 @@ def shop_list(request):
         recipe_id = request.GET.get('recipe_id')
         ShopList.objects.get(recipe__id=recipe_id).delete()
 
-    purchases = Recipe.objects.filter(shop_list__user=request.user)
+    purchases_list = Recipe.objects.filter(shop_list__user=request.user)
 
-    return render(request, 'shopList.html', {'purchases': purchases})
+    return render(request, 'shopList.html', {'purchases': purchases_list})
 
 
 @login_required
@@ -277,6 +268,7 @@ def get_purchases(request):
 
     return response
 
+
 @login_required
 @require_http_methods(['POST', 'DELETE'])
 def purchases(request, recipe_id):
@@ -294,6 +286,7 @@ def purchases(request, recipe_id):
 
         removed = ShopList.objects.filter(user=request.user, recipe=recipe).delete()
         return JsonResponse({'success': bool(removed)})
+
 
 @login_required
 @require_http_methods(['POST', 'DELETE'])
@@ -315,15 +308,15 @@ def subscriptions(request, author_id):
 
 
 @login_required
-def my_follow(request):
-    subscriptions = User.objects.filter(following__reader=request.user).annotate(recipe_count=Count('recipes'))
+def my_follow_list(request):
+    subscriptions_list = User.objects.filter(following__reader=request.user).annotate(recipe_count=Count('recipes'))
 
     recipe: dict = {}
     for sub in subscriptions:
         recipe[sub] = Recipe.objects.filter(author=sub)[:3]
 
     page_number = request.GET.get('page')
-    page, paginator = get_paginator(subscriptions, page_number)
+    page, paginator = get_paginator(subscriptions_list, page_number)
 
     return render(request, 'myFollow.html', {
         'paginator': paginator,
