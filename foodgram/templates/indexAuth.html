@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Рецепты{% endblock %}
+{% block static %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock static %}
+{% block content %}
+{% include 'parts/nav.html' with index=True %}
+{% load product_filters %}
+{% csrf_token %}
+
+<main class="main container">
+    
+    <div class="main__header">
+        <h1 class="main__title">Рецепты</h1>
+        
+        {% include 'parts/tags_index.html' %}
+
+    </div>
+    
+    <div class="card-list">
+        {% for recipe in page %}
+            {% include "parts/recipe_item.html" with recipe=recipe %}
+        {% endfor %}
+    </div>
+    
+        {% if page.has_other_pages %}
+            {% include "parts/paginator.html" with items=page paginator=paginator tags_for_page=tags_list %}
+        {% endif %}
+</main>
+{% endblock content %}
+{% block js %}
+  <script src="{% static 'js/components/MainCards.js' %}"></script>
+  <script src="{% static 'js/components/Purchases.js' %}"></script>
+  <script src="{% static 'js/components/Favorites.js' %}"></script>
+  <script src="{% static 'js/config/config.js' %}"></script>
+  <script src="{% static 'js/components/CardList.js' %}"></script>
+  <script src="{% static 'js/components/Header.js' %}"></script>
+  <script src="{% static 'js/api/Api.js' %}"></script>
+  <script src="{% static 'indexAuth.js' %}"></script>
+{% endblock js%}

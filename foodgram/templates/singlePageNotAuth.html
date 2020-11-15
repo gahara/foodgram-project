@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Рецепты{% endblock %}
+{% block static %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'pages/single.css' %}">
+{% endblock static %}
+{% block content %}
+{% include 'parts/nav.html' with index=True %}
+{% csrf_token %}
+
+<main class="main container">
+    
+    <div class="single-card" data-id={ recipe.id }}>
+        {% load thumbnail %}
+        {% thumbnail recipe.image "960x339" as im %}
+            <img src="{{ im.url }}" class="single-card__image">
+        {% endthumbnail %}
+
+        <div class="single-card__info">
+            
+            <div class="single-card__header-info">
+                <h1 class="single-card__title">{{ recipe.title }}</h1>
+            </div>
+            
+            {% include 'parts/tags.html' %}
+
+            <div class="single-card__items single-card__items_column">
+                <p class="single-card__text"><span class="icon-time"></span>&#160;&#160;{{ recipe.cooking_time }}&#160;мин</p>
+                <p class="single-card__text"><span class="icon-user"></span>&#160;&#160;{{ recipe.author }}</p>
+            </div>
+
+            <ul class="single-card__items">
+                <li class="single-card__item"><button class="button button_style_blue" onclick="location.href= '/auth/login/';"><span class="icon-plus"></span> Добавить в покупки</button></li>
+            </ul>
+
+            <div class="single-card__section">
+                <h3 class="single-card__section-title">Ингридиенты:</h3>
+                <div class="single-card__items single-card__items_column">
+                    {% for content in recipe.recipe_content.all %}
+                        <p class=" single-card__section-item">{{ content.ingredient.title }} - {{ content.quantity }} {{ content.ingredient.dimension }}</p>
+                    {% endfor %}
+
+                </div>
+            </div>
+            
+            <div class="single-card__section">
+                <h3 class="single-card__section-title">Описание:</h3>
+                <p class=" single-card__section-text">{{ recipe.description }}</p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}
+{% block js %}
+<script src="{% static 'js/components/Purchases.js' %}"></script>
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+<script src="{% static 'js/components/SingleCard.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'singlePageNotAuth.js' %}"></script>
+{% endblock js%}
