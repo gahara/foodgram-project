@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 
+from foodgram.settings import PER_PAGE_COUNT
 from .models import Tag
 
-PER_PAGE_COUNT = 6
+TAGS = ['lunch', 'dinner', 'breakfast']
 
 
 def get_paginator(recipe_list, page_number):
@@ -25,7 +26,7 @@ def get_ingredients(request):
 def get_tags_for_edit(request):
     data = request.POST.copy()
     tags = []
-    for value in ['lunch', 'dinner', 'breakfast']:
+    for value in TAGS:
         if value in data and data.get(value) == 'on':
             tag = get_object_or_404(Tag, value=value)
             tags.append(tag)

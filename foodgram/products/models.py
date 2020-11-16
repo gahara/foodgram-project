@@ -28,7 +28,7 @@ class Recipe(models.Model):
     description = models.TextField()
     tags = models.ManyToManyField(Tag, related_name='recipes')
     ingredients = models.ManyToManyField(
-        Ingredient, through='Content', through_fields=('recipe', 'ingredient')  #https://djbook.ru/rel1.9/ref/models/fields.html
+        Ingredient, through='Content', through_fields=('recipe', 'ingredient')
     )
     cooking_time = models.IntegerField(null=True, blank=True)
 
