@@ -40,8 +40,8 @@ class Recipe(models.Model):
 
 
 class Content(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='recipe_content')
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='ingredients')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='contents')
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='contents')
     quantity = models.FloatField()
 
     def __str__(self):
@@ -49,7 +49,7 @@ class Content(models.Model):
 
 
 class Favourite(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favourite_recipes',)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favourites',)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favourites')
 
     def __str__(self):

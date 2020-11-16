@@ -205,7 +205,7 @@ def favourites(request):
     if not tags_list:
         tags_list = ['breakfast', 'lunch', 'dinner']
 
-    recipe_list = Recipe.objects.filter(favourite_recipes__user=request.user).filter(tags__value__in=tags_list).distinct()
+    recipe_list = Recipe.objects.filter(favourites__user=request.user).filter(tags__value__in=tags_list).distinct()
 
     page_number = request.GET.get('page')
     page, paginator = get_paginator(recipe_list, page_number)
@@ -256,7 +256,7 @@ def get_purchases(request):
 
     for recipe in recipes:
         ingredients = recipe.ingredients.values_list('title', 'dimension')
-        content = recipe.recipe_content.values_list('quantity', flat=True)
+        content = recipe.contents.values_list('quantity', flat=True)
 
         for num in range(len(ingredients)):
             title: str = ingredients[num][0]
