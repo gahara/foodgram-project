@@ -12,6 +12,7 @@ from .forms import RecipeCreateForm, RecipeForm
 from users.models import User, Subscription
 from .utils import get_paginator, get_ingredients, get_tags_for_edit
 
+DEFAULT_TAGS = ['breakfast', 'lunch', 'dinner']
 all_tags = Tag.objects.all()
 
 
@@ -26,35 +27,28 @@ def server_error(request):
 def list_ingredients(request):
     text = request.GET['query']
 
-    ingredients = Ingredient.objects.filter(title__istartswith=text)
-    ingredients_list = []
+    ingredients_presentable = list(Ingredient.objects.filter(title__istartswith=text).values('title', 'dimension'))
 
-    for ingredient in ingredients:
-        ingredients_list.append({
-            'title': ingredient.title,
-            'dimension': ingredient.dimension
-        })
-
-    return JsonResponse(ingredients_list, safe=False)
+    return JsonResponse(ingredients_presentable, safe=False)
 
 
 def user_profile(request, username):
-    tags_list = request.GET.getlist('filters')
+    tags = request.GET.getlist('filters')
 
-    if not tags_list:
-        tags_list = ['breakfast', 'lunch', 'dinner']
+    if not tags:
+        tags = DEFAULT_TAGS
 
     profile = get_object_or_404(User, username=username)
 
-    recipe_list = Recipe.objects.filter(author=profile)\
-        .filter(tags__value__in=tags_list)\
+    recipes = Recipe.objects.filter(author=profile)\
+        .filter(tags__value__in=tags)\
         .select_related('author')\
         .distinct()
 
     can_follow = request.user.is_authenticated and request.user != profile
 
     page_number = request.GET.get('page')
-    page, paginator = get_paginator(recipe_list, page_number)
+    page, paginator = get_paginator(recipes, page_number)
 
     return render(request, 'authorRecipe.html', {
         'paginator': paginator,
@@ -62,23 +56,23 @@ def user_profile(request, username):
         'profile': profile,
         'follow_button': can_follow,
         'all_tags': all_tags,
-        'tags_list': tags_list,
+        'tags_list': tags,
         })
 
 
 def index(request):
-    tags_list = request.GET.getlist('filters')
+    tags = request.GET.getlist('filters')
 
-    if not tags_list:
-        tags_list = ['breakfast', 'lunch', 'dinner']
+    if not tags:
+        tags = DEFAULT_TAGS
 
-    recipe_list = Recipe.objects.filter(tags__value__in=tags_list)\
+    recipes = Recipe.objects.filter(tags__value__in=tags)\
         .select_related('author')\
         .prefetch_related('tags')\
         .distinct()
 
     page_number = request.GET.get('page')
-    page, paginator = get_paginator(recipe_list, page_number)
+    page, paginator = get_paginator(recipes, page_number)
 
     shop_list_ids = [shl_id for shl_id in ShopList.objects.values_list('recipe_id', flat=True)]
 
@@ -87,7 +81,7 @@ def index(request):
             'page': page,
             'shop_list_ids': shop_list_ids,
             'all_tags': all_tags,
-            'tags_list': tags_list,
+            'tags_list': tags,
         }
 
     if not request.user.is_authenticated:
@@ -200,21 +194,21 @@ def edit_recipe(request, username, recipe_id):
 
 @login_required
 def favourites(request):
-    tags_list = request.GET.getlist('filters')
+    tags = request.GET.getlist('filters')
 
-    if not tags_list:
-        tags_list = ['breakfast', 'lunch', 'dinner']
+    if not tags:
+        tags = DEFAULT_TAGS
 
-    recipe_list = Recipe.objects.filter(favourites__user=request.user).filter(tags__value__in=tags_list).distinct()
+    recipes = Recipe.objects.filter(favourites__user=request.user).filter(tags__value__in=tags).distinct()
 
     page_number = request.GET.get('page')
-    page, paginator = get_paginator(recipe_list, page_number)
+    page, paginator = get_paginator(recipes, page_number)
 
     return render(request, 'favorites.html', {
         'paginator': paginator,
         'page': page,
         'all_tags': all_tags,
-        'tags_list': tags_list,
+        'tags_list': tags,
     })
 
 
@@ -243,9 +237,9 @@ def shop_list(request):
         recipe_id = request.GET.get('recipe_id')
         ShopList.objects.get(recipe__id=recipe_id).delete()
 
-    purchases_list = Recipe.objects.filter(shop_list__user=request.user)
+    purchases = Recipe.objects.filter(shop_list__user=request.user)
 
-    return render(request, 'shopList.html', {'purchases': purchases_list})
+    return render(request, 'shopList.html', {'purchases': purchases})
 
 
 @login_required
@@ -317,14 +311,14 @@ def subscriptions(request, author_id):
 
 @login_required
 def my_follow_list(request):
-    subscriptions_list = User.objects.filter(following__reader=request.user).annotate(recipe_count=Count('recipes'))
+    my_subscriptions = User.objects.filter(following__reader=request.user).annotate(recipe_count=Count('recipes'))
 
     recipe: dict = {}
-    for sub in subscriptions_list:
+    for sub in my_subscriptions:
         recipe[sub] = Recipe.objects.filter(author=sub)[:3]
 
     page_number = request.GET.get('page')
-    page, paginator = get_paginator(subscriptions_list, page_number)
+    page, paginator = get_paginator(my_subscriptions, page_number)
 
     return render(request, 'myFollow.html', {
         'paginator': paginator,
