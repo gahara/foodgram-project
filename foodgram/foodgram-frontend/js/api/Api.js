@@ -84,7 +84,7 @@ class Api {
       })
   }
   addFavorites (id)  {
-    return fetch(`/change_favorites/${id}`, {
+    return fetch(`/change_favorites/${id}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
