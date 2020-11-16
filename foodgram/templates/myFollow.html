@@ -11,11 +11,11 @@
 {% csrf_token %}
 
 <main class="main container">
-    
+
     <div class="main__header">
         <h1 class="main__title">Мои подписки</h1>
     </div>
-    
+
     <div class="card-list">
     {% for subscription in page %}
         {% include "parts/subscription_item.html" with subscription=subscription recipe=recipe %}

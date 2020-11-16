@@ -1,0 +1,42 @@
+    <div class="card-user" data-author={{ subscription.id }}>
+    
+        <div class="card-user__header">
+            <h2 class="card-user__title">{{ subscription }}</h2>
+        </div>
+        
+        <div class="card-user__body">
+            
+            <ul class="card-user__items">
+
+                {% for author, recipes in recipe.items %}
+                    {% if author == subscription%}
+                        {% for recipe in recipes %}
+                            <li class="card-user__item">
+                                <div class="recipe">
+                                    {% load thumbnail %}
+                                    {% thumbnail recipe.image "960x339" as im %}
+                                        <img src="{{ im.url }}" class="recipe__image">
+                                    {% endthumbnail %}
+                                    <h3 class="recipe__title">{{ recipe.title }}</h3>
+                                    <p class="recipe__text"><span class="icon-time"></span>&#160;&#160;{{ recipe.cooking_time }}&#160;мин</p>
+                                </div>
+                            </li>
+                        {% endfor%}
+                    {% endif %}
+                {% endfor %}
+
+                {% if subscription.recipe_count > 3 %}
+                <li class="card-user__item">
+                    <a href="{% url 'profile' username=subscription.username %}" class="card-user__link link">Еще рецептов: {{ subscription.recipe_count|add:-3 }}</a>
+                </li>
+                {% endif %}
+
+            </ul>
+
+        </div>
+        
+        <div class="card-user__footer">
+            <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+        </div>
+
+    </div> 

@@ -320,7 +320,7 @@ def my_follow_list(request):
     subscriptions_list = User.objects.filter(following__reader=request.user).annotate(recipe_count=Count('recipes'))
 
     recipe: dict = {}
-    for sub in subscriptions:
+    for sub in subscriptions_list:
         recipe[sub] = Recipe.objects.filter(author=sub)[:3]
 
     page_number = request.GET.get('page')
