@@ -1,16 +1,16 @@
-import json
 import csv
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import render, get_object_or_404, redirect
+from users.models import Subscription, User
 
-from .models import Content, Favourite, Ingredient, Recipe, ShopList, Tag
 from .forms import RecipeCreateForm, RecipeForm
-from users.models import User, Subscription
-from .utils import get_paginator, get_ingredients, get_tags_for_edit
+from .models import Content, Favourite, Ingredient, Recipe, ShopList, Tag
+from .utils import get_ingredients, get_paginator, get_tags_for_edit
 
 DEFAULT_TAGS = ['breakfast', 'lunch', 'dinner']
 all_tags = Tag.objects.all()

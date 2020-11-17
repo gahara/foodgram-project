@@ -1,8 +1,6 @@
 from django import template
-
 from products.models import Favourite, ShopList
 from users.models import Subscription
-
 
 register = template.Library()
 

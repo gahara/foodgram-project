@@ -1,7 +1,8 @@
-from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 
 from foodgram.settings import PER_PAGE_COUNT
+
 from .models import Tag
 
 TAGS = ['lunch', 'dinner', 'breakfast']
