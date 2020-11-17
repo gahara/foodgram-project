@@ -18,7 +18,7 @@ class Api {
       })
   }
   addPurchases (id) {
-    return fetch(`/purchases/${id}`, {
+    return fetch(`/purchases/${id}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ class Api {
       })
   }
   removePurchases (id){
-    return fetch(`/purchases/${id}`, {
+    return fetch(`/purchases/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ class Api {
       })
   }
   addSubscriptions(id) {
-    return fetch(`/subscriptions/${id}`, {
+    return fetch(`/subscriptions/${id}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ class Api {
       })
   }
   removeSubscriptions (id) {
-    return fetch(`/subscriptions/${id}`, {
+    return fetch(`/subscriptions/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ class Api {
       })
   }
   addFavorites (id)  {
-    return fetch(`/change_favourites/${id}`, {
+    return fetch(`/change_favorites/${id}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ class Api {
         })
   }
   removeFavorites (id) {
-    return fetch(`/change_favourites/${id}`, {
+    return fetch(`/change_favorites/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

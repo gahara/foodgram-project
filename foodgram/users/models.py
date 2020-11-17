@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 class User(AbstractUser):
@@ -14,7 +14,10 @@ class User(AbstractUser):
             (ADMIN, ADMIN),
         ]
 
-    role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.USER)
+    role = models.CharField(
+        max_length=9,
+        choices=UserRoles.choices,
+        default=UserRoles.USER)
     bio = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(unique=True)
     confirmation_code = models.CharField(max_length=9)

@@ -1,0 +1,5 @@
+<ul class="single-card__items">
+    {% for tag in recipe.tags.all %}
+        <li class="single-card__item"><span class="badge badge_style_{{ tag.colour }}">{{ tag.name }}</span></li>
+    {% endfor %}
+</ul>
