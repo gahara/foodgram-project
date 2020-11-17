@@ -2,7 +2,7 @@ version: '3.8'
 
 volumes:
   postgres_data:
-  static1:
+  static:
 
 services:
   db:
@@ -18,7 +18,7 @@ services:
     restart: always
     command: sh -c "python manage.py migrate --noinput && python manage.py loaddata data/tags.json && python manage.py loaddata data/ingredients.json  && gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - static1:/var/www/web/static
+      - static:/var/www/web/static
     ports:
       - "8000:8000"
     depends_on:
@@ -29,8 +29,8 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static1:/var/www/nginx/static
+      - static:/var/www/nginx/static
     ports:
-      - "81:80"
+      - "80:80"
     depends_on:
       - web
