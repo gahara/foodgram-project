@@ -74,7 +74,7 @@ def index(request):
     page_number = request.GET.get('page')
     page, paginator = get_paginator(recipes, page_number)
 
-    shop_list_ids = [shl_id for shl_id in ShopList.objects.values_list('recipe_id', flat=True)]
+    shop_list_ids = list(ShopList.objects.values_list('recipe_id', flat=True))
 
     response = {
             'paginator': paginator,
@@ -87,7 +87,7 @@ def index(request):
     if not request.user.is_authenticated:
         return render(request, 'indexNotAuth.html', response)
 
-    favourites_ids = [f_id for f_id in Favourite.objects.values_list('recipe_id', flat=True)]
+    favourites_ids = list(Favourite.objects.values_list('recipe_id', flat=True))
     shop_list_count = ShopList.objects.filter(user=request.user).count()
 
     response['favourites_ids'] = favourites_ids
@@ -117,29 +117,27 @@ def view_recipe(request, username, recipe_id):
 
 
 def create_recipe(request):
-    if request.method == 'POST':
-        form = RecipeCreateForm(request.POST or None, files=request.FILES or None)
 
-        if form.is_valid():
-            new_recipe = form.save(commit=False)
-            new_recipe.author = request.user
-            new_recipe.save()
+    form = RecipeCreateForm(request.POST or None, files=request.FILES or None)
 
-            ingredients = get_ingredients(request)
+    if form.is_valid():
+        new_recipe = form.save(commit=False)
+        new_recipe.author = request.user
+        new_recipe.save()
 
-            for title, quantity in ingredients.items():
-                ingredient = Ingredient.objects.get(title=title)
-                content = Content(
-                    recipe=new_recipe,
-                    ingredient=ingredient,
-                    quantity=quantity)
-                content.save()
+        ingredients = get_ingredients(request)
 
-            form.save_m2m()
+        for title, quantity in ingredients.items():
+            ingredient = get_object_or_404(Ingredient, title=title)
+            content = Content(
+                recipe=new_recipe,
+                ingredient=ingredient,
+                quantity=quantity)
+            content.save()
 
-            return redirect('recipe', recipe_id=new_recipe.id, username=request.user.username)
+        form.save_m2m()
 
-    form = RecipeCreateForm()
+        return redirect('recipe', recipe_id=new_recipe.id, username=request.user.username)
     return render(request, 'formRecipe.html', {'form': form})
 
 
@@ -152,7 +150,7 @@ def delete_recipe(request, username, recipe_id):
         return redirect('recipe', username=username, recipe_id=recipe_id)
 
     recipe.delete()
-    return redirect('/')
+    return redirect('index')
 
 
 @login_required
@@ -165,23 +163,22 @@ def edit_recipe(request, username, recipe_id):
     if request.user != author:
         return redirect('recipe', username=username, recipe_id=recipe_id)
 
-    if request.method == 'POST':
+    form = RecipeForm(request.POST, files=request.FILES or None, instance=recipe)
+
+    if form.is_valid():
         new_tags = get_tags_for_edit(request)
-        form = RecipeForm(request.POST, files=request.FILES or None, instance=recipe)
+        new_recipe = form.save(commit=False)
+        new_recipe.author = request.user
+        new_recipe.save()
+        new_recipe.contents.all().delete()
+        ingredients = get_ingredients(request)
+        for title, quantity in ingredients.items():
+            ingredient = Ingredient.objects.get(title=title)
+            content = Content(recipe=new_recipe, ingredient=ingredient, quantity=quantity)
+            content.save()
 
-        if form.is_valid():
-            new_recipe = form.save(commit=False)
-            new_recipe.author = request.user
-            new_recipe.save()
-            new_recipe.recipe_content.all().delete()
-            ingredients = get_ingredients(request)
-            for title, quantity in ingredients.items():
-                ingredient = Ingredient.objects.get(title=title)
-                content = Content(recipe=new_recipe, ingredient=ingredient, quantity=quantity)
-                content.save()
-
-            new_recipe.tags.set(new_tags)
-            return redirect('recipe', recipe_id=recipe.id, username=request.user.username)
+        new_recipe.tags.set(new_tags)
+        return redirect('recipe', recipe_id=recipe.id, username=request.user.username)
 
     form = RecipeForm(instance=recipe)
     return render(request, 'formChangeRecipe.html', {
