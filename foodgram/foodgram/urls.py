@@ -10,8 +10,9 @@ handler500 = 'products.views.server_error'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('about/', include('django.contrib.flatpages.urls')),
-    path('auth/', include('users.urls')),  # это нужно чтобы все урлы, относящиеся к профилю начинались одинаково с auth
+    # это нужно чтобы все урлы, относящиеся к профилю начинались одинаково с
+    # auth
+    path('auth/', include('users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
 
 ]
