@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN CD foodgram
+RUN cd foodgram
 
 RUN python3 manage.py collectstatic --noinput
 
