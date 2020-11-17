@@ -1,5 +1,4 @@
 from django.views.generic import CreateView
-from django.urls import reverse_lazy
 from django.core.mail import send_mail
 
 from .forms import CreationForm
