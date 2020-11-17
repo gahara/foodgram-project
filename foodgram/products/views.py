@@ -243,21 +243,16 @@ def shop_list(request):
 def get_purchases(request):
     recipes = Recipe.objects.filter(shop_list__user=request.user)
 
-    ingredients_needed: dict = {}
+    ingredients_needed = {}
 
     for recipe in recipes:
         ingredients = recipe.ingredients.values_list('title', 'dimension')
         content = recipe.contents.values_list('quantity', flat=True)
 
         for num in range(len(ingredients)):
-            title: str = ingredients[num][0]
-            dimension: str = ingredients[num][1]
-            quantity: int = content[num]
-
-            if title in ingredients_needed.keys():
-                ingredients_needed[title] = [ingredients_needed[title][0] + quantity, dimension]
-            else:
-                ingredients_needed[title] = [quantity, dimension]
+            title, dimension = ingredients[num]
+            quantity = content[num]
+            ingredients_needed[title] = [ingredients_needed.get(title, [0])[0] + quantity, dimension]
 
     response = HttpResponse(content_type='txt/csv')
     writer = csv.writer(response)
