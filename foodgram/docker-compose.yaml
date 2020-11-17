@@ -3,6 +3,7 @@ version: '3.8'
 volumes:
   postgres_data:
   static:
+  media:
 
 services:
   db:
@@ -19,6 +20,7 @@ services:
     command: sh -c "python manage.py migrate --noinput && python manage.py loaddata data/tags.json && python manage.py loaddata data/ingredients.json  && gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static:/var/www/web/static
+      - media:/var/www/web/media
     ports:
       - "8000:8000"
     depends_on:
@@ -30,6 +32,7 @@ services:
     build: ./nginx
     volumes:
       - static:/var/www/nginx/static
+      - media:/var/www/nginx/media
     ports:
       - "80:80"
     depends_on:
