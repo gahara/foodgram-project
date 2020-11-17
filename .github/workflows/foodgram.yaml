@@ -5,6 +5,9 @@ on: [push]
 jobs:
   tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: foodgram
 
     steps:
     - uses: actions/checkout@v2
@@ -37,8 +40,6 @@ jobs:
         with:
           push: true
           tags: gahara/foodgram:latest
-        working-directory: ./foodgram
-
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   deploy:
