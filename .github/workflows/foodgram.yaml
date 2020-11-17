@@ -19,6 +19,7 @@ jobs:
         pip install -r requirements.txt
   push_to_docker_hub:
     name: Push Docker image to Docker Hub
+    working-directory: ./foodgram
     runs-on: ubuntu-latest
     needs: tests
     steps:
