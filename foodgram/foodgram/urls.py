@@ -4,9 +4,10 @@ from django.contrib import admin
 from django.contrib.flatpages import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
+from .views import page_not_found, server_error
 
-handler404 = 'products.views.page_not_found'
-handler500 = 'products.views.server_error'
+handler404 = page_not_found
+handler500 = server_error
 
 urlpatterns = [
     path('admin/', admin.site.urls),

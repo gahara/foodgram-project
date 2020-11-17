@@ -10,10 +10,7 @@ from users.models import Subscription, User
 
 from .forms import RecipeCreateForm, RecipeForm
 from .models import Content, Favourite, Ingredient, Recipe, ShopList, Tag
-from .utils import get_ingredients, get_paginator, get_tags_for_edit
-
-DEFAULT_TAGS = ['breakfast', 'lunch', 'dinner']
-all_tags = Tag.objects.all()
+from .utils import get_ingredients, get_paginator, get_tags_for_edit, DEFAULT_TAGS
 
 
 def page_not_found(request, exception):
@@ -52,6 +49,8 @@ def user_profile(request, username):
     page_number = request.GET.get('page')
     page, paginator = get_paginator(recipes, page_number)
 
+    all_tags = Tag.objects.all()
+
     return render(request, 'authorRecipe.html', {
         'paginator': paginator,
         'page': page,
@@ -75,6 +74,7 @@ def index(request):
     page, paginator = get_paginator(recipes, page_number)
 
     shop_list_ids = list(ShopList.objects.values_list('recipe_id', flat=True))
+    all_tags = Tag.objects.all()
 
     response = {
         'paginator': paginator,
@@ -181,7 +181,7 @@ def edit_recipe(request, username, recipe_id):
         new_recipe.contents.all().delete()
         ingredients = get_ingredients(request)
         for title, quantity in ingredients.items():
-            ingredient = Ingredient.objects.get(title=title)
+            ingredient = get_object_or_404(Ingredient, title=title)
             content = Content(
                 recipe=new_recipe,
                 ingredient=ingredient,
@@ -194,7 +194,8 @@ def edit_recipe(request, username, recipe_id):
             recipe_id=recipe.id,
             username=request.user.username)
 
-    form = RecipeForm(instance=recipe)
+    all_tags = Tag.objects.all()
+
     return render(request, 'formChangeRecipe.html', {
         'form': form,
         'recipe': recipe,
@@ -216,6 +217,7 @@ def favourites(request):
 
     page_number = request.GET.get('page')
     page, paginator = get_paginator(recipes, page_number)
+    all_tags = Tag.objects.all()
 
     return render(request, 'favorites.html', {
         'paginator': paginator,
