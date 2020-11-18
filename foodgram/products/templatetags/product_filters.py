@@ -18,7 +18,7 @@ def is_favorite(request, recipe):
 @register.filter(name='is_follower')
 def is_follower(request, profile):
     if Subscription.objects.filter(
-        user=request.user, author=profile
+        reader=request.user, author=profile
     ).exists():
         return True
 
