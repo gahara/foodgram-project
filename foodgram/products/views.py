@@ -188,6 +188,8 @@ def edit_recipe(request, username, recipe_id):
 
     all_tags = Tag.objects.all()
 
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+
     return render(request, 'formChangeRecipe.html', {
         'form': form,
         'recipe': recipe,
