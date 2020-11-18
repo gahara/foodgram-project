@@ -274,6 +274,8 @@ def get_purchases(request):
     for key, value in ingredients_needed.items():
         writer.writerow([f'{key} ({value[1]}) - {value[0]}'])
 
+    response["Content-Disposition"] = 'attachment; filename="shoplist.txt"'
+
     return response
 
 
