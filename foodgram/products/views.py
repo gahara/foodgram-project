@@ -244,7 +244,7 @@ def change_favourites(request, recipe_id):
 def shop_list(request):
     if request.GET:
         recipe_id = request.GET.get('recipe_id')
-        ShopList.objects.get(recipe__id=recipe_id).delete()
+        ShopList.objects.filter(recipe__id=recipe_id).delete()
 
     purchases = Recipe.objects.filter(shop_list__user=request.user)
 
