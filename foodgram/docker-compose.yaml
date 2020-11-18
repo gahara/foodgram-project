@@ -9,8 +9,8 @@ services:
   db:
     image: postgres:12.4
     volumes:
-#      - postgres_data:/var/lib/postgresql/data/
-       - ./data:/data
+      - postgres_data:/var/lib/postgresql/data/
+      - ./data:/data
     env_file:
       - ./.env
 
