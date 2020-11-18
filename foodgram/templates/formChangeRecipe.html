@@ -59,7 +59,7 @@
                         <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                     </div>
                     <div class="form__field-group-ingredientes-container">
-                        {% for content in recipe.recipe_content.all %}
+                        {% for content in recipe.contents.all %}
                         <div class="form__field-item-ingredient" id="ing{{ forloop.counter }}">
                             <span> {{ content.ingredient.title }} - {{ content.quantity }} {{ content.ingredient.dimension }}</span>
                             <span class="form__field-item-delete"></span>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="form__group">
-                <span class="form__label">Загрузить фото</span>
+                <span class="form__label">Загрузить фото </span>
                 <div class="form__field-group">
                     <input type="file" name="image" id="id_file">
                     <span class="form__error"></span>
