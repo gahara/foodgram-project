@@ -60,7 +60,7 @@
                     </div>
                     <div class="form__field-group-ingredientes-container">
                         {% for content in recipe.contents.all %}
-                        <div class="form__field-item-ingredient" id="ing{{ forloop.counter }}">
+                        <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
                             <span> {{ content.ingredient.title }} - {{ content.quantity }} {{ content.ingredient.dimension }}</span>
                             <span class="form__field-item-delete"></span>
                             <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ content.ingredient.title }}" onclick="ingredient.delete">
