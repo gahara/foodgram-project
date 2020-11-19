@@ -25,7 +25,7 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
 
 urlpatterns += [
-    path('about-author/', views.flatpage, {
+    path('about-us/', views.flatpage, {
         'url': '/about-us/'}, name='about-author'),
     path('about-spec/', views.flatpage, {
         'url': '/about-spec/'}, name='about-spec'),
